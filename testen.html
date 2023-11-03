@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo và sao chép key</title>
+    <style>
+        /* CSS code */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .key-container {
+            margin-top: 100px;
+        }
+        .key {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="key-container">
+        <div class="key" id="key_display">Key</div>
+        <button class="button" onclick="generateNewKey()">Tạo và Sao chép Key</button>
+    </div>
+
+    <script>
+        // JavaScript code
+        function generateNewKey() {
+            var keyElement = document.getElementById('key_display');
+            var currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+            var lastUpdated = localStorage.getItem('lastUpdated');
+            if (!lastUpdated || lastUpdated !== currentDate) {
+                var randomString = generateRandomString(5);
+                var newKey = "key-" + currentDate + "-" + randomString;
+                keyElement.innerHTML = newKey;
+                copyToClipboard(newKey);
+                localStorage.setItem('lastUpdated', currentDate);
+                console.log("Key đã được sao chép: " + newKey);
+            } else {
+                var savedKey = localStorage.getItem('savedKey');
+                keyElement.innerHTML = savedKey;
+                console.log("Sử dụng key cũ: " + savedKey);
+            }
+        }
+
+        function generateRandomString(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        function copyToClipboard(text) {
+            var dummyElement = document.createElement("textarea");
+            document.body.appendChild(dummyElement);
+            dummyElement.value = text;
+            dummyElement.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummyElement);
+            localStorage.setItem('savedKey', text);
+        }
+    </script>
+</body>
+</html>
